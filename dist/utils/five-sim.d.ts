@@ -1,4 +1,4 @@
-import { IBuyHostingNumberParam, ICreatePayoutsParam, IEmptyResponse, INotificationsResponse, IPaymentHistoryParam, IPaymentHistoryResponse, IPricesByCountryRequest, IPricesRequestResponse, IProductsAndPricesRequest, IProductsAndPricesResponse, IPurchaseOptionsParam, IPurchaseResponse, IReBuyNumberParam, IUserOrderParam, IUserOrderResponse, IUserProfileResponse, IVendorResponse, IWalletsReserveResponse } from '../interfaces/five-sim';
+import { IBuyHostingNumberParam, ICreatePayoutsParam, IEmptyResponse, INotificationsResponse, IPaymentHistoryParam, IPaymentHistoryResponse, IPricesByCountryRequest, IPricesRequestResponse, IProductsAndPricesRequest, IProductsAndPricesResponse, IPurchaseOptionsParam, IPurchaseResponse, IReBuyNumberParam, ISMS, IUserOrderParam, IUserOrderResponse, IUserProfileResponse, IVendorResponse, IWalletsReserveResponse } from '../interfaces/five-sim';
 export interface IFiveSim {
     token: string;
     version?: string;
@@ -18,7 +18,12 @@ export default class FiveSim {
     getPricesByProduct(product: string): Promise<IPricesRequestResponse>;
     getPricesByCountryAndProduct(country: string, product: string): Promise<IPricesRequestResponse>;
     purchase(country: string, product: string, operator: string, options?: IPurchaseOptionsParam): Promise<IPurchaseResponse>;
-    waitForCode(order_id: number, checkTime?: number, timeout?: number): Promise<unknown>;
+    purchaseCheapest(country: string, product: string, options?: IPurchaseOptionsParam): Promise<IPurchaseResponse>;
+    getCheapestPriceByCountryAndProduct(country: string, product: string): Promise<{
+        operator: string;
+        data: import("../interfaces/five-sim").IPhoneService;
+    }>;
+    waitForCode(order_id: number, checkTime?: number, timeout?: number): Promise<ISMS>;
     buyHostingNumber(params: IBuyHostingNumberParam): Promise<IPurchaseResponse>;
     reBuyNumber(params: IReBuyNumberParam): Promise<IEmptyResponse>;
     getOrderManagement(order_id: number): Promise<IPurchaseResponse>;

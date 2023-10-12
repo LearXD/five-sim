@@ -84,14 +84,16 @@ export interface IProductsAndPricesResponse {
   }
 }
 
+export interface IPhoneService {
+  cost: number;
+  count: number;
+  rate: number;
+}
+
 export interface IPricesRequestResponse {
   [country: string]: {
     [service: string]: {
-      [phone_service: string]: {
-        cost: number;
-        count: number;
-        rate: number;
-      }
+      [phone_service: string]: IPhoneService
     }
   }
 }

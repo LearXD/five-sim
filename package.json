@@ -1,5 +1,5 @@
 {
-  "name": "fivesim-api",
+  "name": "five-sim",
   "version": "1.2.0",
   "description": "A 5sim.net API wrapper for Node.js",
   "main": "dist/index.js",

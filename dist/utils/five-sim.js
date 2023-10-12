@@ -55,6 +55,16 @@ class FiveSim {
             params: options
         });
     }
+    async purchaseCheapest(country, product, options) {
+        const { operator } = await this.getCheapestPriceByCountryAndProduct(country, product);
+        return this.purchase(country, product, operator, options);
+    }
+    async getCheapestPriceByCountryAndProduct(country, product) {
+        const services = await this.getPricesByCountryAndProduct(country, product);
+        const [operator, data] = Object.entries(services[country][product])
+            .reduce((prev, current) => prev ? (((current[1].cost < prev[1].cost && current[1].count) || !prev[1].count) ? current : prev) : current);
+        return { operator, data };
+    }
     async waitForCode(order_id, checkTime = 5000, timeout = 60 * 1000 * 5 // 5 minutes
     ) {
         if (checkTime < 5000) {
@@ -64,7 +74,6 @@ class FiveSim {
             const check = async () => {
                 console.log(`Cheking for ${order_id}`);
                 const order = await this.getOrderManagement(order_id);
-                console.log(order);
                 if (order.status === five_sim_1.OrderStatuses.TIMEOUT) {
                     reject(new Error('Server side Timeout'));
                     return;
@@ -82,7 +91,6 @@ class FiveSim {
                     return;
                 }
                 if (!order.sms || order.sms.length == 0) {
-                    console.log('No SMS yet');
                     setTimeout(check, checkTime);
                     return;
                 }
@@ -166,7 +174,11 @@ class FiveSim {
     }
     async request(config) {
         try {
-            return (await this.axiosInstance(config)).data;
+            const request = await this.axiosInstance(config);
+            if (request.status >= 400 || (typeof request.data === 'string' && request.data.length > 0)) {
+                throw new Error(request.data || 'Unknown Error');
+            }
+            return request.data;
         }
         catch (error) {
             throw error;

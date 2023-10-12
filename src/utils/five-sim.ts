@@ -14,6 +14,7 @@ import {
   IPurchaseParam,
   IPurchaseResponse,
   IReBuyNumberParam,
+  ISMS,
   IUserOrderParam,
   IUserOrderResponse,
   IUserProfileResponse,
@@ -94,13 +95,30 @@ export default class FiveSim {
     });
   }
 
+  public async purchaseCheapest(
+    country: string,
+    product: string,
+    options?: IPurchaseOptionsParam
+  ) {
+    const { operator } = await this.getCheapestPriceByCountryAndProduct(country, product);
+    return this.purchase(country, product, operator, options);
+  }
 
+  public async getCheapestPriceByCountryAndProduct(country: string, product: string) {
+    const services = await this.getPricesByCountryAndProduct(country, product);
+    const [operator, data] = Object.entries(services[country][product])
+      .reduce(
+        (prev, current) => prev ? (((current[1].cost < prev[1].cost && current[1].count) || !prev[1].count) ? current : prev) : current
+      );
+
+    return { operator, data }
+  }
 
   public async waitForCode(
     order_id: number,
     checkTime: number = 5000,
     timeout: number = 60 * 1000 * 5 // 5 minutes
-  ) {
+  ): Promise<ISMS> {
 
     if (checkTime < 5000) {
       console.warn('Check time below 5000ms is not recommended, but the rate limit is 100req/seconds')
@@ -110,7 +128,6 @@ export default class FiveSim {
       const check = async () => {
         console.log(`Cheking for ${order_id}`)
         const order = await this.getOrderManagement(order_id);
-        console.log(order)
 
         if (order.status === OrderStatuses.TIMEOUT) {
           reject(new Error('Server side Timeout'))
@@ -134,7 +151,6 @@ export default class FiveSim {
 
 
         if (!order.sms || order.sms.length == 0) {
-          console.log('No SMS yet')
           setTimeout(check, checkTime)
           return;
         }
@@ -252,7 +268,11 @@ export default class FiveSim {
 
   private async request<T>(config: AxiosRequestConfig): Promise<T> {
     try {
-      return (await this.axiosInstance(config)).data
+      const request = await this.axiosInstance(config);
+      if (request.status >= 400 || (typeof request.data === 'string' && request.data.length > 0)) {
+        throw new Error(request.data || 'Unknown Error')
+      }
+      return request.data
     } catch (error) {
       throw error
     }
