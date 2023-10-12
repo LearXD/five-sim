@@ -30,7 +30,7 @@ config();
 
     const sms = await fiveSim.waitForCode(order.id)
     console.log('Received the code: ' + sms.code)
-    fiveSim.finishOrder(order.id)
+    await fiveSim.finishOrder(order.id)
 
   } catch (e) {
     console.log('Failed to receive the code, reason: ' + e.message)
