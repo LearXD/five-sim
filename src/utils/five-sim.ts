@@ -11,7 +11,6 @@ import {
   IProductsAndPricesRequest,
   IProductsAndPricesResponse,
   IPurchaseOptionsParam,
-  IPurchaseParam,
   IPurchaseResponse,
   IReBuyNumberParam,
   ISMS,
@@ -101,7 +100,7 @@ export default class FiveSim {
     options?: IPurchaseOptionsParam
   ) {
     const { operator } = await this.getCheapestPriceByCountryAndProduct(country, product);
-    return this.purchase(country, product, operator, options);
+    return await this.purchase(country, product, operator, options);
   }
 
   public async getCheapestPriceByCountryAndProduct(country: string, product: string) {
@@ -126,7 +125,6 @@ export default class FiveSim {
 
     return new Promise((resolve, reject) => {
       const check = async () => {
-        console.log(`Cheking for ${order_id}`)
         const order = await this.getOrderManagement(order_id);
 
         if (order.status === OrderStatuses.TIMEOUT) {
@@ -270,7 +268,7 @@ export default class FiveSim {
     try {
       const request = await this.axiosInstance(config);
       if (request.status >= 400 || (typeof request.data === 'string' && request.data.length > 0)) {
-        throw new Error(request.data || 'Unknown Error')
+        throw new Error(request.data || ('Unknown Error with status code ' + request.status + ''))
       }
       return request.data
     } catch (error) {

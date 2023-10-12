@@ -57,7 +57,7 @@ class FiveSim {
     }
     async purchaseCheapest(country, product, options) {
         const { operator } = await this.getCheapestPriceByCountryAndProduct(country, product);
-        return this.purchase(country, product, operator, options);
+        return await this.purchase(country, product, operator, options);
     }
     async getCheapestPriceByCountryAndProduct(country, product) {
         const services = await this.getPricesByCountryAndProduct(country, product);
@@ -72,7 +72,6 @@ class FiveSim {
         }
         return new Promise((resolve, reject) => {
             const check = async () => {
-                console.log(`Cheking for ${order_id}`);
                 const order = await this.getOrderManagement(order_id);
                 if (order.status === five_sim_1.OrderStatuses.TIMEOUT) {
                     reject(new Error('Server side Timeout'));
@@ -176,7 +175,7 @@ class FiveSim {
         try {
             const request = await this.axiosInstance(config);
             if (request.status >= 400 || (typeof request.data === 'string' && request.data.length > 0)) {
-                throw new Error(request.data || 'Unknown Error');
+                throw new Error(request.data || ('Unknown Error with status code ' + request.status + ''));
             }
             return request.data;
         }

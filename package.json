@@ -7,7 +7,8 @@
     "start": "node dist/index.js",
     "dev": "ts-node-dev ./src/index.ts",
     "build": "tsc",
-    "example": "node ./examples/example.js"
+    "example": "node ./examples/example.js",
+    "publish": "npm run build && npm publish"
   },
   "keywords": [
     "5sim",

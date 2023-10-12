@@ -17,11 +17,11 @@ config();
 
     const cheapest = await fiveSim.getCheapestPriceByCountryAndProduct(country, product)
     if (cheapest.data.cost > 55) {
-      console.log(`I can't buy ${serviceName} because it's too expensive. Service cost: ${serviceData.cost}`)
+      console.log(`I can't buy ${cheapest.operator} because it's too expensive. Service cost: ${serviceData.cost}`)
       return;
     }
 
-    console.log(`Buying ${serviceName} for ${serviceData.cost}`)
+    console.log(`Buying ${cheapest.operator} for ${cheapest.data.cost}`)
 
     const order = await fiveSim.purchase(country, product, cheapest.operator)
     const expires = (new Date(order.expires) - new Date(order.created_at)) / (60 * 1000);
