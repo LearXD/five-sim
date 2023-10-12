@@ -1,5 +1,5 @@
 {
-  "name": "five-sim",
+  "name": "node-five-sim",
   "version": "1.2.0",
   "description": "A 5sim.net API wrapper for Node.js",
   "main": "dist/index.js",
@@ -8,7 +8,7 @@
     "dev": "ts-node-dev ./src/index.ts",
     "build": "tsc",
     "example": "node ./examples/example.js",
-    "publish": "npm run build && npm publish"
+    "publish": "npm run build"
   },
   "keywords": [
     "5sim",

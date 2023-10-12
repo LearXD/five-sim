@@ -5,7 +5,7 @@ A complete API wrapper for 5sim.net
 ## Installation
 
 ```bash
-npm i five-sim
+npm i @learxd/node-five-sim
 ```
 or
 ```bash
@@ -15,7 +15,7 @@ npm i https://github.com/LearXD/five-sim
 ## Usage (complex)
 
 ```js
-const { FiveSim } = require('five-sim');
+const { FiveSim } = require('node-five-sim');
 
 const youAsyncFunction = async (country, product) => {
   const fiveSim = new FiveSim({ token: 'YOUR_TOKEN' })
@@ -41,7 +41,7 @@ youAsyncFunction('russia', 'microsoft')
 ## Usage (simple)
   
 ```js
-const { FiveSim } = require('five-sim');
+const { FiveSim } = require('node-five-sim');
 
 const youAsyncFunction = async (country, product) => {
   const fiveSim = new FiveSim({ token: 'YOUR_TOKEN' })
